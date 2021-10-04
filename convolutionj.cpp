@@ -13,8 +13,6 @@ int x, y;
 int filter[9] = {-1, -2, -3, -4, 0, 4, 3, 2, 1};
 
 void convolute(){
-    // std::cout << "Not implemented!" << std::endl;
-
     for (int i = 0; i < WIDTH; i++){
         for (int j = 0; j < HEIGHT; j++){
             x = i;
@@ -26,53 +24,29 @@ void convolute(){
 
 void kernelGrid(){
 
-    int curPixel = (y * WIDTH) + x;
+    int curPixel=(y*WIDTH)+x;
     int kernelConvolution = 0;
-    std::cout<<"currently convoluting the pixel at ("<<x<<", "<<y<<")"<<::std::endl;
     if ((x == 0) || (x == (WIDTH - 1)) || (y == 0) || (y == (HEIGHT - 1))){
         kernelConvolution = data[curPixel];
+    
     }else{
-
-        // Matrix of values in filter
         int upL,upM,upR;
         int cenL,cenM,cenR;
         int lowL,lowM,lowR;
+        int upRow=y-1;
+        int lowRow=y+1;
+        upL=(upRow*WIDTH)+x-1;
+        upM=(upRow*WIDTH)+x;
+        upR=(upRow*WIDTH)+x+1;
+        cenL=curPixel-1;
+        cenM=curPixel;
+        cenR=curPixel+1;
+        lowL=(lowRow*WIDTH)+x-1;
+        lowM=(lowRow*WIDTH)+x;
+        lowR=(lowRow*WIDTH)+x+1;
 
-
-        //upper row of matrix
-        int upRow = y - 1;
-        upL = (upRow * WIDTH) + x - 1;
-        upM = (upRow * WIDTH) + x;
-        upR = (upRow * WIDTH) + x + 1;
-
-
-        //central row of matrix
-        cenL = curPixel - 1;
-        cenM = curPixel;
-        cenR = curPixel + 1;
-
-
-        //lower row of matrix
-        int lowRow = y + 1;
-        lowL = (lowRow * WIDTH) + x - 1;
-        lowM = (lowRow * WIDTH) + x;
-        lowR = (lowRow * WIDTH) + x + 1;
-
-
-        //adding each sector to kernal conv 
-        kernelConvolution += data[upL] * filter[0];
-        kernelConvolution += data[upM] * filter[1];
-        kernelConvolution += data[upR] * filter[2];
-        kernelConvolution += data[cenL] * filter[3];
-        kernelConvolution += data[cenM] * filter[4];
-        kernelConvolution += data[cenR] * filter[5];
-        kernelConvolution += data[lowL] * filter[6];
-        kernelConvolution += data[lowM] * filter[7];
-        kernelConvolution += data[lowR] * filter[8];
+        kernelConvolution=(data[upL]*filter[0])+(data[upM]*filter[1])+(data[upR]*filter[2])+(data[cenL]*filter[3])+(data[cenM]*filter[4])+(data[cenR]*filter[5])+(data[lowL]*filter[6])+(data[lowM]*filter[7])+(data[lowR]*filter[8]);
     }
-
-    
-    std::cout<<"given ("<<data[curPixel]<<") value after using kernel conv ("<< kernelConvolution <<") "<<std::endl;
 
     int divValue = 0;
     for (size_t i = 0; i < sizeof(filter); i++)
@@ -80,7 +54,7 @@ void kernelGrid(){
         divValue = abs(filter[i]);
     }
     
-    outdata[curPixel] = kernelConvolution/divValue;
+    outdata[curPixel]=kernelConvolution/divValue;
 }
 
 void createMargin(){
@@ -122,10 +96,10 @@ void changePixel(int channel){
 
     int curPixel = (y * WIDTH) + x;
     if (channel == 0){
-        if ((x < 15) || (x > (WIDTH - 15)) || (y < 15) || (y < (HEIGHT - 15))){
-            transImage[curPixel] = 30; 
+        if ((x<15) || (x>(WIDTH-15)) || (y<15) || (y<(HEIGHT-15))){
+            transImage[curPixel]=30; 
         }else{
-            transImage[curPixel] = 100;
+            transImage[curPixel]=100;
         }
     }else{
         transImage[curPixel*(channel+1)]=data[curPixel];
